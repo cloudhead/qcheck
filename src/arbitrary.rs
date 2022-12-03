@@ -108,6 +108,12 @@ impl Gen {
     }
 }
 
+impl Default for Gen {
+    fn default() -> Self {
+        Self::new(Gen::DEFAULT_SIZE)
+    }
+}
+
 /// Creates a shrinker with zero elements.
 pub fn empty_shrinker<A: 'static>() -> Box<dyn Iterator<Item = A>> {
     Box::new(empty())

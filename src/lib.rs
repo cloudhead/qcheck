@@ -66,26 +66,6 @@ macro_rules! quickcheck {
     )
 }
 
-#[cfg(feature = "use_logging")]
-fn env_logger_init() -> Result<(), log::SetLoggerError> {
-    env_logger::try_init()
-}
-#[cfg(feature = "use_logging")]
-macro_rules! info {
-    ($($tt:tt)*) => {
-        log::info!($($tt)*)
-    };
-}
-
-#[cfg(not(feature = "use_logging"))]
-fn env_logger_init() {}
-#[cfg(not(feature = "use_logging"))]
-macro_rules! info {
-    ($($_ignore:tt)*) => {
-        ()
-    };
-}
-
 mod arbitrary;
 mod tester;
 

@@ -114,19 +114,6 @@ quickcheck = "1"
 quickcheck_macros = "1"
 ```
 
-N.B. When using `quickcheck` (either directly or via the attributes),
-`RUST_LOG=quickcheck` enables `info!` so that it shows useful output
-(like the number of tests passed). This is **not** needed to show
-witnesses for failures.
-
-Crate features:
-
-- `"use_logging"`: (Enabled by default.) Enables the log messages governed
-  `RUST_LOG`.
-- `"regex"`: (Enabled by default.) Enables the use of regexes with
-  `env_logger`.
-
-
 ### Minimum Rust version policy
 
 This crate's minimum supported `rustc` version is `1.46.0`.

@@ -135,10 +135,6 @@ impl QuickCheck {
     /// It is appropriate to use this method with Rust's unit testing
     /// infrastructure.
     ///
-    /// Note that if the environment variable `RUST_LOG` is set to enable
-    /// `info` level log messages for the `quickcheck` crate, then this will
-    /// include output on how many QuickCheck tests were passed.
-    ///
     /// # Example
     ///
     /// ```rust
@@ -157,16 +153,13 @@ impl QuickCheck {
     where
         A: Testable,
     {
-        // Ignore log init failures, implying it has already been done.
-        let _ = crate::env_logger_init();
-
         let n_tests_passed = match self.quicktest(f) {
             Ok(n_tests_passed) => n_tests_passed,
             Err(result) => panic!("{}", result.failed_msg()),
         };
 
         if n_tests_passed >= self.min_tests_passed {
-            info!("(Passed {} QuickCheck tests.)", n_tests_passed)
+            // Do nothing.
         } else {
             panic!(
                 "(Unable to generate enough tests, {} not discarded.)",

@@ -47,7 +47,7 @@ pub fn quickcheck(_args: TokenStream, input: TokenStream) -> TokenStream {
                     #(#attrs)*
                     fn #name() {
                         #item_fn
-                       ::quickcheck::quickcheck(#name as #fn_type)
+                       ::qcheck::quickcheck(#name as #fn_type)
                     }
                 }
             } else {
@@ -66,7 +66,7 @@ pub fn quickcheck(_args: TokenStream, input: TokenStream) -> TokenStream {
                 #(#attrs)*
                 fn #name() {
                     #item_static
-                    ::quickcheck::quickcheck(#name)
+                    ::qcheck::quickcheck(#name)
                 }
             }
         }

@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 use std::ops::Bound::{self, *};
 
-use quickcheck::{quickcheck, TestResult};
+use qcheck::{quickcheck, TestResult};
 
 /// Covers every `std::ops::Range*` plus variants with exclusive start.
 type RangeAny<T> = (Bound<T>, Bound<T>);

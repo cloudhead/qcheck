@@ -1,4 +1,4 @@
-use quickcheck::quickcheck;
+use qcheck::quickcheck;
 
 fn sieve(n: usize) -> Vec<usize> {
     if n <= 1 {

@@ -1,9 +1,7 @@
 #![allow(dead_code)]
+extern crate qcheck_macros;
 
-extern crate quickcheck;
-extern crate quickcheck_macros;
-
-use quickcheck_macros::quickcheck;
+use qcheck_macros::quickcheck;
 
 fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {
     let mut rev = vec![];

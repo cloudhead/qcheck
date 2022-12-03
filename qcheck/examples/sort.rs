@@ -1,7 +1,7 @@
 // This is a buggy quick sort implementation, QuickCheck will find the bug for
 // you.
 
-use quickcheck::quickcheck;
+use qcheck::quickcheck;
 
 fn smaller_than<T: Clone + Ord>(xs: &[T], pivot: &T) -> Vec<T> {
     xs.iter().filter(|&x| *x < *pivot).cloned().collect()
@@ -40,7 +40,7 @@ fn main() {
     fn keeps_length(xs: Vec<isize>) -> bool {
         xs.len() == sort(&xs).len()
     }
-    quickcheck(keeps_length as fn(Vec<isize>) -> bool);
 
+    quickcheck(keeps_length as fn(Vec<isize>) -> bool);
     quickcheck(is_sorted as fn(Vec<isize>) -> bool)
 }

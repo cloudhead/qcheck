@@ -1,4 +1,4 @@
-use quickcheck::{quickcheck, TestResult};
+use qcheck::{quickcheck, TestResult};
 
 fn main() {
     fn prop(length: usize, index: usize) -> TestResult {

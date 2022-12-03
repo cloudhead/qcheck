@@ -1,10 +1,10 @@
 #![allow(non_upper_case_globals)]
 
-extern crate quickcheck;
-extern crate quickcheck_macros;
+extern crate qcheck;
+extern crate qcheck_macros;
 
-use quickcheck::TestResult;
-use quickcheck_macros::quickcheck;
+use qcheck::TestResult;
+use qcheck_macros::quickcheck;
 
 #[quickcheck]
 fn min(x: isize, y: isize) -> TestResult {
@@ -17,7 +17,9 @@ fn min(x: isize, y: isize) -> TestResult {
 
 #[quickcheck]
 #[should_panic]
-fn fail_fn() -> bool { false }
+fn fail_fn() -> bool {
+    false
+}
 
 #[quickcheck]
 static static_bool: bool = true;

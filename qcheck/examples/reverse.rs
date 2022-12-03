@@ -1,4 +1,4 @@
-use quickcheck::quickcheck;
+use qcheck::quickcheck;
 
 fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {
     let mut rev = vec![];

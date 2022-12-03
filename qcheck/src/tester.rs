@@ -138,7 +138,7 @@ impl QuickCheck {
     /// # Example
     ///
     /// ```rust
-    /// use quickcheck::QuickCheck;
+    /// use qcheck::QuickCheck;
     ///
     /// fn prop_reverse_reverse() {
     ///     fn revrev(xs: Vec<usize>) -> bool {

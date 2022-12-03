@@ -1,3 +1,5 @@
+#![allow(clippy::new_ret_no_self)]
+#![allow(clippy::or_fun_call)]
 use std::char;
 use std::collections::{
     BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque,
@@ -47,7 +49,7 @@ impl Gen {
     /// randomly generated number. (Unless that number is used to control the
     /// size of a data structure.)
     pub fn new(size: usize) -> Gen {
-        Gen { rng: rand::rngs::SmallRng::from_entropy(), size: size }
+        Gen { rng: rand::rngs::SmallRng::from_entropy(), size }
     }
 
     /// Returns the size configured with this generator.
@@ -131,9 +133,7 @@ pub trait Arbitrary: Clone + 'static {
 }
 
 impl Arbitrary for () {
-    fn arbitrary(_: &mut Gen) -> () {
-        ()
-    }
+    fn arbitrary(_: &mut Gen) {}
 }
 
 impl Arbitrary for bool {
@@ -282,8 +282,8 @@ impl<A: Arbitrary> VecShrinker<A> {
         };
         let size = seed.len();
         Box::new(VecShrinker {
-            seed: seed,
-            size: size,
+            seed,
+            size,
             offset: size,
             element_shrinker: es,
         })
@@ -567,7 +567,7 @@ impl Arbitrary for OsString {
 
     fn shrink(&self) -> Box<dyn Iterator<Item = OsString>> {
         let mystring: String = self.clone().into_string().unwrap();
-        Box::new(mystring.shrink().map(|s| OsString::from(s)))
+        Box::new(mystring.shrink().map(OsString::from))
     }
 }
 
@@ -745,7 +745,7 @@ macro_rules! unsigned_shrinker {
                         Box::new(
                             vec![0]
                                 .into_iter()
-                                .chain(UnsignedShrinker { x: x, i: x / 2 }),
+                                .chain(UnsignedShrinker { x, i: x / 2 }),
                         )
                     }
                 }
@@ -756,7 +756,7 @@ macro_rules! unsigned_shrinker {
                 fn next(&mut self) -> Option<$ty> {
                     if self.x - self.i < self.x {
                         let result = Some(self.x - self.i);
-                        self.i = self.i / 2;
+                        self.i /= 2;
                         result
                     } else {
                         None
@@ -811,7 +811,7 @@ macro_rules! signed_shrinker {
                     if x == 0 {
                         super::empty_shrinker()
                     } else {
-                        let shrinker = SignedShrinker { x: x, i: x / 2 };
+                        let shrinker = SignedShrinker { x, i: x / 2 };
                         let mut items = vec![0];
                         if shrinker.i < 0 && shrinker.x != <$ty>::MIN {
                             items.push(shrinker.x.abs());
@@ -828,7 +828,7 @@ macro_rules! signed_shrinker {
                         || (self.x - self.i).abs() < self.x.abs()
                     {
                         let result = Some(self.x - self.i);
-                        self.i = self.i / 2;
+                        self.i /= 2;
                         result
                     } else {
                         None
@@ -921,7 +921,7 @@ macro_rules! unsigned_non_zero_shrinker {
                     } else {
                         Box::new(
                             std::iter::once(1).chain(
-                                UnsignedNonZeroShrinker { x: x, i: x / 2 },
+                                UnsignedNonZeroShrinker { x, i: x / 2 },
                             ),
                         )
                     }
@@ -934,7 +934,7 @@ macro_rules! unsigned_non_zero_shrinker {
                 fn next(&mut self) -> Option<$ty> {
                     if self.x - self.i < self.x {
                         let result = Some(self.x - self.i);
-                        self.i = self.i / 2;
+                        self.i /= 2;
                         result
                     } else {
                         None
@@ -1125,6 +1125,7 @@ impl Arbitrary for SystemTime {
 }
 
 #[cfg(test)]
+#[allow(clippy::unit_cmp)]
 mod test {
     use std::collections::{
         BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque,
@@ -1365,11 +1366,11 @@ mod test {
                 for n in v {
                     let found = shrunk.iter().any(|&i| i == n);
                     if !found {
-                        panic!(format!(
+                        panic!(
                             "Element {:?} was not found \
                              in shrink results {:?}",
                             n, shrunk
-                        ));
+                        );
                     }
                 }
             }
@@ -1561,6 +1562,7 @@ mod test {
     }
 
     #[test]
+    #[allow(clippy::reversed_empty_ranges)]
     fn ranges() {
         ordered_eq(0..0, vec![]);
         ordered_eq(1..1, vec![0..1, 1..0]);

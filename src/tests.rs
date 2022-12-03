@@ -1,4 +1,4 @@
-use std::cmp::Ord;
+#![allow(clippy::single_match)]
 use std::collections::hash_map::DefaultHasher;
 use std::collections::{HashMap, HashSet};
 use std::ffi::CString;
@@ -19,16 +19,15 @@ fn prop_oob() {
              but instead it passed {} tests.",
             n
         ),
-        _ => return,
+        _ => (),
     }
 }
 
 #[test]
 fn prop_reverse_reverse() {
     fn prop(xs: Vec<usize>) -> bool {
-        let rev: Vec<_> = xs.clone().into_iter().rev().collect();
-        let revrev: Vec<_> = rev.into_iter().rev().collect();
-        xs == revrev
+        let rev: Vec<_> = xs.clone().into_iter().rev().rev().collect();
+        xs == rev
     }
     quickcheck(prop as fn(Vec<usize>) -> bool);
 }
@@ -68,9 +67,8 @@ fn reverse_app() {
         app.extend(ys.iter().cloned());
         let app_rev: Vec<usize> = app.into_iter().rev().collect();
 
-        let rxs: Vec<usize> = xs.into_iter().rev().collect();
         let mut rev_app = ys.into_iter().rev().collect::<Vec<usize>>();
-        rev_app.extend(rxs.into_iter());
+        rev_app.extend(xs.into_iter().rev());
 
         app_rev == rev_app
     }
@@ -92,7 +90,7 @@ fn max() {
 #[test]
 fn sort() {
     fn prop(mut xs: Vec<isize>) -> bool {
-        xs.sort_by(|x, y| x.cmp(y));
+        xs.sort();
         for i in xs.windows(2) {
             if i[0] > i[1] {
                 return false;

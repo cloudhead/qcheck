@@ -162,7 +162,7 @@ impl QuickCheck {
 
         let n_tests_passed = match self.quicktest(f) {
             Ok(n_tests_passed) => n_tests_passed,
-            Err(result) => panic!(result.failed_msg()),
+            Err(result) => panic!("{}", result.failed_msg()),
         };
 
         if n_tests_passed >= self.min_tests_passed {
@@ -173,6 +173,12 @@ impl QuickCheck {
                 n_tests_passed
             )
         }
+    }
+}
+
+impl Default for QuickCheck {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

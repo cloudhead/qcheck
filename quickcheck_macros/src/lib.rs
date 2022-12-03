@@ -3,8 +3,6 @@ extern crate proc_macro2;
 extern crate quote;
 extern crate syn;
 
-use std::mem;
-
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
@@ -31,11 +29,11 @@ pub fn quickcheck(_args: TokenStream, input: TokenStream) -> TokenStream {
             });
 
             if errors.is_empty() {
-                let attrs = mem::replace(&mut item_fn.attrs, Vec::new());
+                let attrs = std::mem::take(&mut item_fn.attrs);
                 let name = &item_fn.sig.ident;
                 let fn_type = syn::TypeBareFn {
                     lifetimes: None,
-                    unsafety: item_fn.sig.unsafety.clone(),
+                    unsafety: item_fn.sig.unsafety,
                     abi: item_fn.sig.abi.clone(),
                     fn_token: <syn::Token![fn]>::default(),
                     paren_token: syn::token::Paren::default(),
@@ -60,7 +58,7 @@ pub fn quickcheck(_args: TokenStream, input: TokenStream) -> TokenStream {
             }
         }
         Ok(syn::Item::Static(mut item_static)) => {
-            let attrs = mem::replace(&mut item_static.attrs, Vec::new());
+            let attrs = std::mem::take(&mut item_static.attrs);
             let name = &item_static.ident;
 
             quote! {

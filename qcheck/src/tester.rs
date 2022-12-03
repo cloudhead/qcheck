@@ -64,7 +64,12 @@ impl QuickCheck {
         let max_tests = cmp::max(tests, qc_max_tests());
         let min_tests_passed = qc_min_tests_passed();
 
-        QuickCheck { tests, max_tests, min_tests_passed, gen }
+        QuickCheck {
+            tests,
+            max_tests,
+            min_tests_passed,
+            gen,
+        }
     }
 
     /// Set the random number generator to be used by QuickCheck.
@@ -120,7 +125,9 @@ impl QuickCheck {
             }
             match f.result(&mut self.gen) {
                 TestResult { status: Pass, .. } => n_tests_passed += 1,
-                TestResult { status: Discard, .. } => continue,
+                TestResult {
+                    status: Discard, ..
+                } => continue,
                 r @ TestResult { status: Fail, .. } => return Err(r),
             }
         }
@@ -223,7 +230,11 @@ impl TestResult {
     /// When a test is discarded, `quickcheck` will replace it with a
     /// fresh one (up to a certain limit).
     pub fn discard() -> TestResult {
-        TestResult { status: Discard, arguments: None, err: None }
+        TestResult {
+            status: Discard,
+            arguments: None,
+            err: None,
+        }
     }
 
     /// Converts a `bool` to a `TestResult`. A `true` value indicates that
@@ -430,7 +441,9 @@ mod test {
         fn t(_: i8) -> bool {
             true
         }
-        QuickCheck::new().gen(Gen::new(129)).quickcheck(t as fn(i8) -> bool);
+        QuickCheck::new()
+            .gen(Gen::new(129))
+            .quickcheck(t as fn(i8) -> bool);
     }
 
     #[test]

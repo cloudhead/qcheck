@@ -72,8 +72,7 @@ pub fn quickcheck(_args: TokenStream, input: TokenStream) -> TokenStream {
         }
         _ => {
             let span = proc_macro2::TokenStream::from(input).span();
-            let msg =
-                "#[quickcheck] is only supported on statics and functions";
+            let msg = "#[quickcheck] is only supported on statics and functions";
 
             syn::parse::Error::new(span, msg).to_compile_error()
         }

@@ -1,24 +1,15 @@
 #![allow(clippy::new_ret_no_self)]
 #![allow(clippy::or_fun_call)]
 use std::char;
-use std::collections::{
-    BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque,
-};
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::env;
 use std::ffi::{CString, OsString};
 use std::hash::{BuildHasher, Hash};
 use std::iter::{empty, once};
-use std::net::{
-    IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6,
-};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
 use std::num::Wrapping;
-use std::num::{
-    NonZeroU128, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize,
-};
-use std::ops::{
-    Bound, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo,
-    RangeToInclusive,
-};
+use std::num::{NonZeroU128, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize};
+use std::ops::{Bound, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive};
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -45,7 +36,10 @@ impl Gen {
 
     /// Returns a `Gen` with a random seed and the given size configuration.
     pub fn new(size: usize) -> Gen {
-        Gen { rng: rand::rngs::SmallRng::from_entropy(), size }
+        Gen {
+            rng: rand::rngs::SmallRng::from_entropy(),
+            size,
+        }
     }
 
     /// Returns a `Gen` with the given seed and a default size configuration.
@@ -425,16 +419,14 @@ impl<K: Arbitrary + Ord, V: Arbitrary> Arbitrary for BTreeMap<K, V> {
     fn shrink(&self) -> Box<dyn Iterator<Item = BTreeMap<K, V>>> {
         let vec: Vec<(K, V)> = self.clone().into_iter().collect();
         Box::new(
-            vec.shrink().map(|v| v.into_iter().collect::<BTreeMap<K, V>>()),
+            vec.shrink()
+                .map(|v| v.into_iter().collect::<BTreeMap<K, V>>()),
         )
     }
 }
 
-impl<
-        K: Arbitrary + Eq + Hash,
-        V: Arbitrary,
-        S: BuildHasher + Default + Clone + 'static,
-    > Arbitrary for HashMap<K, V, S>
+impl<K: Arbitrary + Eq + Hash, V: Arbitrary, S: BuildHasher + Default + Clone + 'static> Arbitrary
+    for HashMap<K, V, S>
 {
     fn arbitrary(g: &mut Gen) -> Self {
         let vec: Vec<(K, V)> = Arbitrary::arbitrary(g);
@@ -468,13 +460,14 @@ impl<T: Arbitrary + Ord> Arbitrary for BinaryHeap<T> {
     fn shrink(&self) -> Box<dyn Iterator<Item = BinaryHeap<T>>> {
         let vec: Vec<T> = self.clone().into_iter().collect();
         Box::new(
-            vec.shrink().map(|v| v.into_iter().collect::<BinaryHeap<T>>()),
+            vec.shrink()
+                .map(|v| v.into_iter().collect::<BinaryHeap<T>>()),
         )
     }
 }
 
-impl<T: Arbitrary + Eq + Hash, S: BuildHasher + Default + Clone + 'static>
-    Arbitrary for HashSet<T, S>
+impl<T: Arbitrary + Eq + Hash, S: BuildHasher + Default + Clone + 'static> Arbitrary
+    for HashSet<T, S>
 {
     fn arbitrary(g: &mut Gen) -> Self {
         let vec: Vec<T> = Arbitrary::arbitrary(g);
@@ -496,7 +489,8 @@ impl<T: Arbitrary> Arbitrary for LinkedList<T> {
     fn shrink(&self) -> Box<dyn Iterator<Item = LinkedList<T>>> {
         let vec: Vec<T> = self.clone().into_iter().collect();
         Box::new(
-            vec.shrink().map(|v| v.into_iter().collect::<LinkedList<T>>()),
+            vec.shrink()
+                .map(|v| v.into_iter().collect::<LinkedList<T>>()),
         )
     }
 }
@@ -567,8 +561,7 @@ impl Arbitrary for PathBuf {
     fn arbitrary(g: &mut Gen) -> PathBuf {
         // use some real directories as guesses, so we may end up with
         // actual working directories in case that is relevant.
-        let here =
-            env::current_dir().unwrap_or(PathBuf::from("/test/directory"));
+        let here = env::current_dir().unwrap_or(PathBuf::from("/test/directory"));
         let temp = env::temp_dir();
         #[allow(deprecated)]
         let home = env::home_dir().unwrap_or(PathBuf::from("/home/user"));
@@ -673,10 +666,8 @@ impl Arbitrary for CString {
         // Use the implementation for a vec here, but make sure null characters
         // are filtered out.
         Box::new(VecShrinker::new(self.as_bytes().to_vec()).map(|bytes| {
-            CString::new(
-                bytes.into_iter().filter(|&c| c != 0).collect::<Vec<u8>>(),
-            )
-            .expect("null characters should have been filtered out")
+            CString::new(bytes.into_iter().filter(|&c| c != 0).collect::<Vec<u8>>())
+                .expect("null characters should have been filtered out")
         }))
     }
 }
@@ -701,11 +692,10 @@ impl Arbitrary for char {
             60..=84 => {
                 // Characters often used in programming languages
                 g.choose(&[
-                    ' ', ' ', ' ', '\t', '\n', '~', '`', '!', '@', '#', '$',
-                    '%', '^', '&', '*', '(', ')', '_', '-', '=', '+', '[',
-                    ']', '{', '}', ':', ';', '\'', '"', '\\', '|', ',', '<',
-                    '>', '.', '/', '?', '0', '1', '2', '3', '4', '5', '6',
-                    '7', '8', '9',
+                    ' ', ' ', ' ', '\t', '\n', '~', '`', '!', '@', '#', '$', '%', '^', '&', '*',
+                    '(', ')', '_', '-', '=', '+', '[', ']', '{', '}', ':', ';', '\'', '"', '\\',
+                    '|', ',', '<', '>', '.', '/', '?', '0', '1', '2', '3', '4', '5', '6', '7', '8',
+                    '9',
                 ])
                 .unwrap()
                 .to_owned()
@@ -796,11 +786,7 @@ macro_rules! unsigned_shrinker {
                     if x == 0 {
                         super::empty_shrinker()
                     } else {
-                        Box::new(
-                            vec![0]
-                                .into_iter()
-                                .chain(UnsignedShrinker { x, i: x / 2 }),
-                        )
+                        Box::new(vec![0].into_iter().chain(UnsignedShrinker { x, i: x / 2 }))
                     }
                 }
             }
@@ -878,9 +864,7 @@ macro_rules! signed_shrinker {
             impl Iterator for SignedShrinker {
                 type Item = $ty;
                 fn next(&mut self) -> Option<$ty> {
-                    if self.x == <$ty>::MIN
-                        || (self.x - self.i).abs() < self.x.abs()
-                    {
+                    if self.x == <$ty>::MIN || (self.x - self.i).abs() < self.x.abs() {
                         let result = Some(self.x - self.i);
                         self.i /= 2;
                         result
@@ -928,7 +912,15 @@ macro_rules! float_problem_values {
     ($path:path) => {{
         // hack. see: https://github.com/rust-lang/rust/issues/48067
         use $path as p;
-        &[p::NAN, p::NEG_INFINITY, p::MIN, -0., 0., p::MAX, p::INFINITY]
+        &[
+            p::NAN,
+            p::NEG_INFINITY,
+            p::MIN,
+            -0.,
+            0.,
+            p::MAX,
+            p::INFINITY,
+        ]
     }};
 }
 
@@ -973,11 +965,7 @@ macro_rules! unsigned_non_zero_shrinker {
                     if x == 1 {
                         super::empty_shrinker()
                     } else {
-                        Box::new(
-                            std::iter::once(1).chain(
-                                UnsignedNonZeroShrinker { x, i: x / 2 },
-                            ),
-                        )
+                        Box::new(std::iter::once(1).chain(UnsignedNonZeroShrinker { x, i: x / 2 }))
                     }
                 }
             }
@@ -1050,12 +1038,8 @@ impl<T: Arbitrary> Arbitrary for Bound<T> {
     }
     fn shrink(&self) -> Box<dyn Iterator<Item = Bound<T>>> {
         match *self {
-            Bound::Included(ref x) => {
-                Box::new(x.shrink().map(Bound::Included))
-            }
-            Bound::Excluded(ref x) => {
-                Box::new(x.shrink().map(Bound::Excluded))
-            }
+            Bound::Included(ref x) => Box::new(x.shrink().map(Bound::Included)),
+            Bound::Excluded(ref x) => Box::new(x.shrink().map(Bound::Excluded)),
             Bound::Unbounded => empty_shrinker(),
         }
     }
@@ -1067,7 +1051,9 @@ impl<T: Arbitrary + Clone + PartialOrd> Arbitrary for Range<T> {
     }
     fn shrink(&self) -> Box<dyn Iterator<Item = Range<T>>> {
         Box::new(
-            (self.start.clone(), self.end.clone()).shrink().map(|(s, e)| s..e),
+            (self.start.clone(), self.end.clone())
+                .shrink()
+                .map(|(s, e)| s..e),
         )
     }
 }
@@ -1327,7 +1313,10 @@ mod test {
     #[test]
     fn quads() {
         eq((false, false, false, false), vec![]);
-        eq((true, false, false, false), vec![(false, false, false, false)]);
+        eq(
+            (true, false, false, false),
+            vec![(false, false, false, false)],
+        );
         eq(
             (true, true, false, false),
             vec![(false, true, false, false), (true, false, false, false)],
@@ -1479,7 +1468,10 @@ mod test {
         );
 
         eq([false, false, false, false], vec![]);
-        eq([true, false, false, false], vec![[false, false, false, false]]);
+        eq(
+            [true, false, false, false],
+            vec![[false, false, false, false]],
+        );
         eq(
             [true, true, false, false],
             vec![[false, true, false, false], [true, false, false, false]],
@@ -1521,7 +1513,10 @@ mod test {
             vec![vec![]],
         );
         eq(vec![1isize], vec![vec![], vec![0]]);
-        eq(vec![11isize], vec![vec![], vec![0], vec![6], vec![9], vec![10]]);
+        eq(
+            vec![11isize],
+            vec![vec![], vec![0], vec![6], vec![9], vec![10]],
+        );
         eq(
             vec![3isize, 5],
             vec![

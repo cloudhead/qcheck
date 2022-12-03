@@ -52,9 +52,7 @@ fn reverse_single() {
         if xs.len() != 1 {
             TestResult::discard()
         } else {
-            TestResult::from_bool(
-                xs == xs.clone().into_iter().rev().collect::<Vec<_>>(),
-            )
+            TestResult::from_bool(xs == xs.clone().into_iter().rev().collect::<Vec<_>>())
         }
     }
     quickcheck(prop as fn(Vec<usize>) -> TestResult);
@@ -178,7 +176,9 @@ fn regression_issue_83() {
     fn prop(_: u8) -> bool {
         true
     }
-    QuickCheck::new().gen(Gen::new(1024)).quickcheck(prop as fn(u8) -> bool)
+    QuickCheck::new()
+        .gen(Gen::new(1024))
+        .quickcheck(prop as fn(u8) -> bool)
 }
 
 #[test]
@@ -186,7 +186,9 @@ fn regression_issue_83_signed() {
     fn prop(_: i8) -> bool {
         true
     }
-    QuickCheck::new().gen(Gen::new(1024)).quickcheck(prop as fn(i8) -> bool)
+    QuickCheck::new()
+        .gen(Gen::new(1024))
+        .quickcheck(prop as fn(i8) -> bool)
 }
 
 // Test that we can show the message after panic
@@ -229,9 +231,7 @@ fn regression_issue_107_hang() {
 }
 
 #[test]
-#[should_panic(
-    expected = "(Unable to generate enough tests, 0 not discarded.)"
-)]
+#[should_panic(expected = "(Unable to generate enough tests, 0 not discarded.)")]
 fn all_tests_discarded_min_tests_passed_set() {
     fn prop_discarded(_: u8) -> TestResult {
         TestResult::discard()
